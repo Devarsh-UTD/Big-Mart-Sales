@@ -1,7 +1,6 @@
 # Big-Mart-Sales-
 
 The aim is to build a predictive model and find out the sales of each product at a particular store.
-I will be using R in order to achieve this.
 
 We will be going through the following steps :-
 
