@@ -109,7 +109,7 @@ The output gives us following observations:
 
 # Data Cleaning
 
-Herein we would inpute the missing values present in 'Item_Weight' and 'Outlet_Size' using rpart package.
+Herein we would inpute the missing values present in 'Item_Weight'  using rpart package.
 
 ```R
 temp1 <- full_data
@@ -124,4 +124,40 @@ colnames(full_data)[colSums(is.na(full_data)) > 0]
 We have successfully developed a decision tree model using the anova method in rpart  and used it to perform imputations on missing 
 values in the 'Item_Weight' column.
 
+I would be using the mice package to perform categorical imputations on 'Outlet_Size'
+```R
+library(mice)
+temp2 <- full_data
+temp2 <- subset(temp2, select = - Item_Outlet_Sales)
+miceMod <- mice(temp2[, !names(temp2) %in% "Item_Outlet_Sales"], method="rf")  
+miceOutput <- complete(miceMod)
+colnames(full_data)[colSums(is.na(full_data)) > 0]
+character(0)
+```
+Hence we have filled the missing values in 'Outlet_Size'
+
+# Feature Engineering
+
+Lets see if we can combine the Outlet_Type categories. A quick way to check that could be to analyze the mean sales by type of store. If they have similar sales, then keeping them separate won’t help much.
+```R
+library(sqldf)
+sqldf('select AVG(Item_Outlet_Sales), Outlet_Type from new group by Outlet_Type ')
+  AVG(Item_Outlet_Sales)       Outlet_Type
+1               203.8971     Grocery Store
+2              1389.8582 Supermarket Type1
+3              1197.8155 Supermarket Type2
+4              2215.4753 Supermarket Type3
+```
+Since there is a significant difference among the different types of  Outlet_Type, we will not combine them
+
+We noticed that the minimum value in Item_ Visibility was 0, which makes no practical sense. Lets consider it like missing information and impute it with mean visibility of that product.
+```
+sqldf('select COUNT(Item_Visibility) from new where Item_Visibility = 0 ')
+          COUNT(Item_Visibility)
+1                    879
+new$Item_Visibility[new$Item_Visibility == 0] <- mean(new$Item_Visibility)
+sqldf('select COUNT(Item_Visibility) from new where Item_Visibility = 0 ')
+           COUNT(Item_Visibility)
+1                      0
+```
 
