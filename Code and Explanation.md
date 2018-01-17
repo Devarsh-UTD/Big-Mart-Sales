@@ -163,13 +163,13 @@ Lets see if we can combine the Outlet_Type categories. A quick way to check that
 Since there is a significant difference among the different types of  Outlet_Type, we will not combine them
 
 We noticed that the minimum value in Item_ Visibility was 0, which makes no practical sense. Lets consider it like missing information and impute it with mean visibility of that product.
+
 ```R
 sqldf('select COUNT(Item_Visibility) from new where Item_Visibility = 0 ')
 ```
 ```R
           COUNT(Item_Visibility)
 1                    879
-
 ```
 ```R
 new$Item_Visibility[new$Item_Visibility == 0] <- mean(new$Item_Visibility)
@@ -179,4 +179,29 @@ sqldf('select COUNT(Item_Visibility) from new where Item_Visibility = 0 ')
            COUNT(Item_Visibility)
 1                      0
 ```
+
+Item_Type variable has 16 categories which might prove to be very useful in analysis. So its a good idea to combine them
+If you look at the Item_Identifier, i.e. the unique ID of each item, it starts with either FD, DR or NC. If you see the categories, these look like being Food, Drinks and Non-Consumables.
+
+```R
+> get_first_2_char <-sapply(new[,'Item_Identifier'], substring, 1, 2)
+> length(get_first_2_char)
+
+> temp3 <- ''
+> for(i in 1:length(get_first_2_char)){
+   if(get_first_2_char[i] == 'FD'){
+     temp3[i] <- 'Food' 
+   }else if(get_first_2_char[i] == 'DR'){
+     temp3[i] <- 'Drinks'
+   }else{
+     temp3[i] <- 'Non-Consumable'
+   }
+ }
+ > new$Item_Type_Combined <-temp3
+```
+```R
+[1] "Food"           "Drinks"         "Food"           "Food"           "Non-Consumable" "Food"          
+```
+
+
 
