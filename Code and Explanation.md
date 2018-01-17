@@ -16,6 +16,8 @@ full_data <- rbind(train,temp)
 Lets perform some basic exploratory analysis of full_data
 ```R
 str(full_data)
+```
+```R
 'data.frame':	14204 obs. of  12 variables:
      $ Item_Identifier          : Factor w/ 1559 levels "DRA12","DRA24",..: 157 9 663 1122 1298 759 697 739 441 991 ...
      $ Item_Weight              : num  9.3 5.92 17.5 19.2 8.93 ...
@@ -32,6 +34,8 @@ str(full_data)
 ```
 ```R
 summary(full_data)
+```
+```R
 Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility                   Item_Type       Item_MRP     
  DRA24  :   10   Min.   : 4.555   LF     : 522     Min.   :0.00000   Fruits and Vegetables:2013   Min.   : 31.29  
  DRA59  :   10   1st Qu.: 8.710   low fat: 178     1st Qu.:0.02704   Snack Foods          :1989   1st Qu.: 94.01  
@@ -58,13 +62,16 @@ Some useful observations
  Lets check for missing values in the data 
 ```R
 colnames(full_data)[colSums(is.na(full_data)) > 0]
+```
+```R
 "Item_Weight" "Outlet_Size"
 ```
  Thus we have two columns with missing values, we will impute the missing data in data cleaning section.
  also some of the columns are factor,num and char. Now lets look at the unique values present in each of the categorical columns
 ```R
 unique_values <- apply(full_data, 2, function(x)length(unique(x)))
-
+```
+```R
               Item_Identifier               Item_Weight          Item_Fat_Content           Item_Visibility 
                      1559                       416                         5                     13006 
                 Item_Type                  Item_MRP         Outlet_Identifier Outlet_Establishment_Year 
@@ -80,7 +87,8 @@ cat_var <- full_data[var1]
 cat_var <- subset(cat_var, select = - Item_Identifier)
 unique_values1 <- apply(cat_var, 2, unique)
 unique_values1
-
+```
+```R
 $Item_Fat_Content
 [1] "Low Fat" "Regular" "low fat" "LF"      "reg"    
 
@@ -119,6 +127,8 @@ anova_mod <- rpart(Item_Weight ~ . ,
 x <- predict(anova_mod,temp1[is.na(temp1$Item_Weight),])
 full_data[is.na(full_data$Item_Weight),"Item_Weight"] <- x
 colnames(full_data)[colSums(is.na(full_data)) > 0]
+```
+```R
 [1] "Outlet_Size"
 ```
 We have successfully developed a decision tree model using the anova method in rpart  and used it to perform imputations on missing 
@@ -132,6 +142,8 @@ temp2 <- subset(temp2, select = - Item_Outlet_Sales)
 miceMod <- mice(temp2[, !names(temp2) %in% "Item_Outlet_Sales"], method="rf")  
 miceOutput <- complete(miceMod)
 colnames(full_data)[colSums(is.na(full_data)) > 0]
+```
+```R
 character(0)
 ```
 Hence we have filled the missing values in 'Outlet_Size'
@@ -153,13 +165,17 @@ Since there is a significant difference among the different types of  Outlet_Typ
 We noticed that the minimum value in Item_ Visibility was 0, which makes no practical sense. Lets consider it like missing information and impute it with mean visibility of that product.
 ```R
 sqldf('select COUNT(Item_Visibility) from new where Item_Visibility = 0 ')
-
+```
+```R
           COUNT(Item_Visibility)
 1                    879
+
+```
+```R
 new$Item_Visibility[new$Item_Visibility == 0] <- mean(new$Item_Visibility)
 sqldf('select COUNT(Item_Visibility) from new where Item_Visibility = 0 ')
 ```
-```
+```R
            COUNT(Item_Visibility)
 1                      0
 ```
