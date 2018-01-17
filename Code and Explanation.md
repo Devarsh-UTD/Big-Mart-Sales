@@ -7,15 +7,15 @@ We will combine the test and train in order to perform our feature engineering  
 Lets start of reading out test and train files into R
 ```R
 > library(xlsx)
-  train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
-  test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
-  library(xlsx)
-  temp <- data.frame(Item_Outlet_Sales=rep("None",nrow(test)),test[,])
-  full_data <- rbind(train,temp)
+> train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
+> test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
+> library(xlsx)
+> temp <- data.frame(Item_Outlet_Sales=rep("None",nrow(test)),test[,])
+> full_data <- rbind(train,temp)
 ```
 Lets perform some basic exploratory analysis of full_data
 ```R
-str(full_data)
+> str(full_data)
 ```
 ```R
 'data.frame':	14204 obs. of  12 variables:
@@ -33,7 +33,7 @@ str(full_data)
      $ Item_Outlet_Sales        : chr  "3735.138" "443.4228" "2097.27" "732.38" ...
 ```
 ```R
-summary(full_data)
+> summary(full_data)
 ```
 ```R
 Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility                   Item_Type       Item_MRP     
@@ -61,7 +61,7 @@ Some useful observations
    3) The lower ‘count’ of Item_Weight and Item_Outlet_Sales confirms the findings from the missing value check
  Lets check for missing values in the data 
 ```R
-colnames(full_data)[colSums(is.na(full_data)) > 0]
+> colnames(full_data)[colSums(is.na(full_data)) > 0]
 ```
 ```R
 "Item_Weight" "Outlet_Size"
@@ -69,7 +69,7 @@ colnames(full_data)[colSums(is.na(full_data)) > 0]
  Thus we have two columns with missing values, we will impute the missing data in data cleaning section.
  also some of the columns are factor,num and char. Now lets look at the unique values present in each of the categorical columns
 ```R
-unique_values <- apply(full_data, 2, function(x)length(unique(x)))
+> unique_values <- apply(full_data, 2, function(x)length(unique(x)))
 ```
 ```R
               Item_Identifier               Item_Weight          Item_Fat_Content           Item_Visibility 
@@ -82,11 +82,11 @@ unique_values <- apply(full_data, 2, function(x)length(unique(x)))
 This tells us that there are 1559 products and 10 outlets/stores.Another thing that should catch attention is that Item_Type has 16 unique values.
 Let’s explore further using the frequency of different categories in each nominal variable. I’ll exclude the ID and source variables for obvious reasons
 ```R
-var1 <- sapply(full_data , is.factor)
-cat_var <- full_data[var1]
-cat_var <- subset(cat_var, select = - Item_Identifier)
-unique_values1 <- apply(cat_var, 2, unique)
-unique_values1
+> var1 <- sapply(full_data , is.factor)
+> cat_var <- full_data[var1]
+> cat_var <- subset(cat_var, select = - Item_Identifier)
+> unique_values1 <- apply(cat_var, 2, unique)
+> unique_values1
 ```
 ```R
 $Item_Fat_Content
@@ -120,13 +120,13 @@ The output gives us following observations:
 Herein we would inpute the missing values present in 'Item_Weight'  using rpart package.
 
 ```R
-temp1 <- full_data
-temp1 <- subset(temp1, select = - Item_Outlet_Sales)
-anova_mod <- rpart(Item_Weight ~ . , 
+> temp1 <- full_data
+> temp1 <- subset(temp1, select = - Item_Outlet_Sales)
+> anova_mod <- rpart(Item_Weight ~ . , 
                    data=temp1[!is.na(temp1$Item_Weight), ], method="anova", na.action=na.omit)  
-x <- predict(anova_mod,temp1[is.na(temp1$Item_Weight),])
-full_data[is.na(full_data$Item_Weight),"Item_Weight"] <- x
-colnames(full_data)[colSums(is.na(full_data)) > 0]
+> x <- predict(anova_mod,temp1[is.na(temp1$Item_Weight),])
+> full_data[is.na(full_data$Item_Weight),"Item_Weight"] <- x
+> colnames(full_data)[colSums(is.na(full_data)) > 0]
 ```
 ```R
 [1] "Outlet_Size"
@@ -136,12 +136,12 @@ values in the 'Item_Weight' column.
 
 I would be using the mice package to perform categorical imputations on 'Outlet_Size'
 ```R
-library(mice)
-temp2 <- full_data
-temp2 <- subset(temp2, select = - Item_Outlet_Sales)
-miceMod <- mice(temp2[, !names(temp2) %in% "Item_Outlet_Sales"], method="rf")  
-miceOutput <- complete(miceMod)
-colnames(full_data)[colSums(is.na(full_data)) > 0]
+> library(mice)
+> temp2 <- full_data
+> temp2 <- subset(temp2, select = - Item_Outlet_Sales)
+> miceMod <- mice(temp2[, !names(temp2) %in% "Item_Outlet_Sales"], method="rf")  
+> miceOutput <- complete(miceMod)
+> colnames(full_data)[colSums(is.na(full_data)) > 0]
 ```
 ```R
 character(0)
@@ -152,8 +152,8 @@ Hence we have filled the missing values in 'Outlet_Size'
 
 Lets see if we can combine the Outlet_Type categories. A quick way to check that could be to analyze the mean sales by type of store. If they have similar sales, then keeping them separate won’t help much.
 ```R
-library(sqldf)
-sqldf('select AVG(Item_Outlet_Sales), Outlet_Type from new group by Outlet_Type ')
+> library(sqldf)
+> sqldf('select AVG(Item_Outlet_Sales), Outlet_Type from new group by Outlet_Type ')
   AVG(Item_Outlet_Sales)       Outlet_Type
 1               203.8971     Grocery Store
 2              1389.8582 Supermarket Type1
