@@ -1,3 +1,5 @@
+# Data Exploration
+
 We’ll be performing some basic data exploration here and come up with some inferences about the data. 
 We’ll try to figure out some irregularities and address them in the next section. 
 We will combine the test and train in order to perform our feature engineering  efficiently and later divide them again.
@@ -100,3 +102,26 @@ $Outlet_Location_Type
 $Outlet_Type
 [1] "Supermarket Type1" "Supermarket Type2" "Grocery Store"     "Supermarket Type3"
 ```
+The output gives us following observations:
+*Item_Fat_Content: Some of ‘Low Fat’ values mis-coded as ‘low fat’ and ‘LF’. Also, some of ‘Regular’ are mentioned as ‘regular’.
+*Item_Type: Not all categories have substantial numbers. It looks like combining them can give better results.
+*Outlet_Type: Supermarket Type2 and Type3 can be combined.
+
+# Data Cleaning
+
+Herein we would inpute the missing values present in 'Item_Weight' and 'Outlet_Size' using rpart package.
+
+```R
+temp1 <- full_data
+temp1 <- subset(temp1, select = - Item_Outlet_Sales)
+anova_mod <- rpart(Item_Weight ~ . , 
+                   data=temp1[!is.na(temp1$Item_Weight), ], method="anova", na.action=na.omit)  
+x <- predict(anova_mod,temp1[is.na(temp1$Item_Weight),])
+full_data[is.na(full_data$Item_Weight),"Item_Weight"] <- x
+colnames(full_data)[colSums(is.na(full_data)) > 0]
+[1] "Outlet_Size"
+```
+We have successfully developed a decision tree model using the anova method in rpart  and used it to perform imputations on missing 
+values in the 'Item_Weight' column.
+
+
