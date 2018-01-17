@@ -7,8 +7,6 @@ Lets start of reading out test and train files into R
 library(xlsx)
 train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
 test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
-```
-```
 library(xlsx)
 temp <- data.frame(Item_Outlet_Sales=rep("None",nrow(test)),test[,])
 full_data <- rbind(train,temp)
@@ -16,8 +14,6 @@ full_data <- rbind(train,temp)
 Lets perform some basic exploratory analysis of full_data
 ```
 str(full_data)
-```
-```
 'data.frame':	14204 obs. of  12 variables:
      $ Item_Identifier          : Factor w/ 1559 levels "DRA12","DRA24",..: 157 9 663 1122 1298 759 697 739 441 991 ...
      $ Item_Weight              : num  9.3 5.92 17.5 19.2 8.93 ...
@@ -34,8 +30,6 @@ str(full_data)
 ```
 ```
 summary(full_data)
-```
-```
 Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility                   Item_Type       Item_MRP     
  DRA24  :   10   Min.   : 4.555   LF     : 522     Min.   :0.00000   Fruits and Vegetables:2013   Min.   : 31.29  
  DRA59  :   10   1st Qu.: 8.710   low fat: 178     1st Qu.:0.02704   Snack Foods          :1989   1st Qu.: 94.01  
@@ -62,22 +56,20 @@ Some useful observations
  Lets check for missing values in the data 
 ```
 colnames(full_data)[colSums(is.na(full_data)) > 0]
-```
-```
 "Item_Weight" "Outlet_Size"
 ```
  Thus we have two columns with missing values, we will impute the missing data in data cleaning section.
  also some of the columns are factor,num and char. Now lets look at the unique values present in each of the categorical columns
 ```
 unique_values <- apply(full_data, 2, function(x)length(unique(x)))
-```
+
               Item_Identifier               Item_Weight          Item_Fat_Content           Item_Visibility 
                      1559                       416                         5                     13006 
                 Item_Type                  Item_MRP         Outlet_Identifier Outlet_Establishment_Year 
                        16                      8052                        10                         9 
               Outlet_Size      Outlet_Location_Type               Outlet_Type         Item_Outlet_Sales 
                         4                         3                         4                      3494 
-                        
+ ```                      
 This tells us that there are 1559 products and 10 outlets/stores.Another thing that should catch attention is that Item_Type has 16 unique values.
 Let’s explore further using the frequency of different categories in each nominal variable. I’ll exclude the ID and source variables for obvious reasons
 ```
@@ -86,12 +78,10 @@ cat_var <- full_data[var1]
 cat_var <- subset(cat_var, select = - Item_Identifier)
 unique_values1 <- apply(cat_var, 2, unique)
 unique_values1
-```
-```
+
 $Item_Fat_Content
 [1] "Low Fat" "Regular" "low fat" "LF"      "reg"    
-```
-```
+
 $Item_Type
  [1] "Dairy"                 "Soft Drinks"           "Meat"                  "Fruits and Vegetables"
  [5] "Household"             "Baking Goods"          "Snack Foods"           "Frozen Foods"         
