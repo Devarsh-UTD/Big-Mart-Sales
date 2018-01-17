@@ -19,6 +19,7 @@ full_data <- rbind(train,temp)
 ```
 str(full_data)
 ```
+```
 'data.frame':	14204 obs. of  12 variables:
      $ Item_Identifier          : Factor w/ 1559 levels "DRA12","DRA24",..: 157 9 663 1122 1298 759 697 739 441 991 ...
      $ Item_Weight              : num  9.3 5.92 17.5 19.2 8.93 ...
@@ -33,7 +34,9 @@ str(full_data)
      $ Outlet_Type              : Factor w/ 4 levels "Grocery Store",..: 2 3 2 1 2 3 2 4 2 2 ...
      $ Item_Outlet_Sales        : chr  "3735.138" "443.4228" "2097.27" "732.38" ...
 ```
+```
 summary(full_data)
+```
 ```
 Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility                   Item_Type       Item_MRP     
  DRA24  :   10   Min.   : 4.555   LF     : 522     Min.   :0.00000   Fruits and Vegetables:2013   Min.   : 31.29  
@@ -51,7 +54,7 @@ Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility               
  OUT049 :1550      3rd Qu.:2004                                                                                            
  OUT045 :1548      Max.   :2009                                                                                            
  (Other):4894
- 
+ ```
 ## Some useful observations
 ##   1) Item_Visibility has a min value of zero. This makes no practical sense because when a product is being sold in a store,
 ##      the visibility cannot be 0.
@@ -62,8 +65,9 @@ Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility               
 ```
 colnames(full_data)[colSums(is.na(full_data)) > 0]
 ```
+```
 "Item_Weight" "Outlet_Size"
-
+```
 ## Thus we have two columns with missing values, we will impute the missing data in data cleaning section.
 ## also some of the columns are factor,num and char.
 ## Now lets look at the unique values present in each of the categorical columns
@@ -86,9 +90,11 @@ cat_var <- subset(cat_var, select = - Item_Identifier)
 unique_values1 <- apply(cat_var, 2, unique)
 unique_values1
 ```
+```
 $Item_Fat_Content
 [1] "Low Fat" "Regular" "low fat" "LF"      "reg"    
-
+```
+```
 $Item_Type
  [1] "Dairy"                 "Soft Drinks"           "Meat"                  "Fruits and Vegetables"
  [5] "Household"             "Baking Goods"          "Snack Foods"           "Frozen Foods"         
@@ -106,4 +112,4 @@ $Outlet_Location_Type
 
 $Outlet_Type
 [1] "Supermarket Type1" "Supermarket Type2" "Grocery Store"     "Supermarket Type3"
-
+```
