@@ -1,9 +1,10 @@
 rm(list = ls(all=TRUE))
 
+```
 library(xlsx)
 train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
 test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
-
+```
 temp <- data.frame(Item_Outlet_Sales=rep("None",nrow(test)),test[,])
 
 full_data <- rbind(train,temp) 
