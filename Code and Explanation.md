@@ -1,4 +1,4 @@
-## Lets start of reading out test and train files into R
+*Lets start of reading out test and train files into R
 
 ```
 library(xlsx)
@@ -6,16 +6,16 @@ train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
 test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
 ```
 
-## We’ll be performing some basic data exploration here and come up with some inferences about the data. 
-## We’ll try to figure out some irregularities and address them in the next section. 
-## We will combine the test and train in order to perform our feature engineering  efficiently and later divide them again.
+* We’ll be performing some basic data exploration here and come up with some inferences about the data. 
+* We’ll try to figure out some irregularities and address them in the next section. 
+* We will combine the test and train in order to perform our feature engineering  efficiently and later divide them again.
 
 ```
 library(xlsx)
 temp <- data.frame(Item_Outlet_Sales=rep("None",nrow(test)),test[,])
 full_data <- rbind(train,temp)
 ```
-## Lets perform some basic exploratory analysis of full_data
+* Lets perform some basic exploratory analysis of full_data
 ```
 str(full_data)
 ```
@@ -55,22 +55,22 @@ Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility               
  OUT045 :1548      Max.   :2009                                                                                            
  (Other):4894
  ```
-## Some useful observations
-##   1) Item_Visibility has a min value of zero. This makes no practical sense because when a product is being sold in a store,
-##      the visibility cannot be 0.
-##   2) Outlet_Establishment_Years vary from 1985 to 2009. The values might not be apt in this form. Rather, 
-##      if we can convert them to how old the particular store is, it should have a better impact on sales.
-##   3) The lower ‘count’ of Item_Weight and Item_Outlet_Sales confirms the findings from the missing value check
-## Lets check for missing values in the data 
+* Some useful observations
+*   1) Item_Visibility has a min value of zero. This makes no practical sense because when a product is being sold in a store,
+*      the visibility cannot be 0.
+*   2) Outlet_Establishment_Years vary from 1985 to 2009. The values might not be apt in this form. Rather, 
+*      if we can convert them to how old the particular store is, it should have a better impact on sales.
+*   3) The lower ‘count’ of Item_Weight and Item_Outlet_Sales confirms the findings from the missing value check
+* Lets check for missing values in the data 
 ```
 colnames(full_data)[colSums(is.na(full_data)) > 0]
 ```
 ```
 "Item_Weight" "Outlet_Size"
 ```
-## Thus we have two columns with missing values, we will impute the missing data in data cleaning section.
-## also some of the columns are factor,num and char.
-## Now lets look at the unique values present in each of the categorical columns
+* Thus we have two columns with missing values, we will impute the missing data in data cleaning section.
+* also some of the columns are factor,num and char.
+* Now lets look at the unique values present in each of the categorical columns
 ```
 unique_values <- apply(full_data, 2, function(x)length(unique(x)))
 ```
@@ -81,8 +81,8 @@ unique_values <- apply(full_data, 2, function(x)length(unique(x)))
               Outlet_Size      Outlet_Location_Type               Outlet_Type         Item_Outlet_Sales 
                         4                         3                         4                      3494 
                         
-## This tells us that there are 1559 products and 10 outlets/stores.Another thing that should catch attention is that Item_Type has 16 unique values.
-## Let’s explore further using the frequency of different categories in each nominal variable. I’ll exclude the ID and source variables for obvious reasons
+* This tells us that there are 1559 products and 10 outlets/stores.Another thing that should catch attention is that Item_Type has 16 unique values.
+* Let’s explore further using the frequency of different categories in each nominal variable. I’ll exclude the ID and source variables for obvious reasons
 ```
 var1 <- sapply(full_data , is.factor)
 cat_var <- full_data[var1]
