@@ -6,12 +6,12 @@ We will combine the test and train in order to perform our feature engineering  
 
 Lets start of reading out test and train files into R
 ```R
-library(xlsx)
-train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
-test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
-library(xlsx)
-temp <- data.frame(Item_Outlet_Sales=rep("None",nrow(test)),test[,])
-full_data <- rbind(train,temp)
+> library(xlsx)
+  train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
+  test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
+  library(xlsx)
+  temp <- data.frame(Item_Outlet_Sales=rep("None",nrow(test)),test[,])
+  full_data <- rbind(train,temp)
 ```
 Lets perform some basic exploratory analysis of full_data
 ```R
