@@ -158,7 +158,8 @@ sqldf('select COUNT(Item_Visibility) from new where Item_Visibility = 0 ')
 1                    879
 new$Item_Visibility[new$Item_Visibility == 0] <- mean(new$Item_Visibility)
 sqldf('select COUNT(Item_Visibility) from new where Item_Visibility = 0 ')
-
+```
+```
            COUNT(Item_Visibility)
 1                      0
 ```
