@@ -1,8 +1,10 @@
 ## Lets start of reading out test and train files into R
 
-```library(xlsx)
+```
+library(xlsx)
 train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
-test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)```
+test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
+```
 
 ## We’ll be performing some basic data exploration here and come up with some inferences about the data. 
 ## We’ll try to figure out some irregularities and address them in the next section. 
