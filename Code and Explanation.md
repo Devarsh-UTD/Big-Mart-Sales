@@ -1,6 +1,6 @@
-* We’ll be performing some basic data exploration here and come up with some inferences about the data. 
-* We’ll try to figure out some irregularities and address them in the next section. 
-* We will combine the test and train in order to perform our feature engineering  efficiently and later divide them again.
+We’ll be performing some basic data exploration here and come up with some inferences about the data. 
+We’ll try to figure out some irregularities and address them in the next section. 
+We will combine the test and train in order to perform our feature engineering  efficiently and later divide them again.
 
 Lets start of reading out test and train files into R
 ```R
