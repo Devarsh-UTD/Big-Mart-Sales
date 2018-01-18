@@ -1,0 +1,2 @@
+We will be using python for encoding the variables since it is relatively easy to do it in python as compared to R.
+
