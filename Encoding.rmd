@@ -1,2 +1,31 @@
 We will be using python for encoding the variables since it is relatively easy to do it in python as compared to R.
 
+```
+from pandas import *
+import numpy as np
+from matplotlib import *  
+
+data_train = read_csv('C:/Users/devarsh patel/Desktop/New folder/alg1.csv')
+data_test = read_csv('C:/Users/devarsh patel/Desktop/New folder/alg0.csv')
+
+
+#Import library:
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+
+data_train['Outlet'] = le.fit_transform(data_train['Outlet_Identifier'])
+var_mod = ['Item_Fat_Content','Outlet_Location_Type','Outlet_Size','Item_Type_Combined','Outlet_Type','Outlet','category_by_sales','Item_Identifier']
+le = LabelEncoder()
+for i in var_mod:
+    data_train[i] = le.fit_transform(data_train[i])
+ 
+data_test['Outlet'] = le.fit_transform(data_test['Outlet_Identifier'])
+var_mod = ['Item_Fat_Content','Outlet_Location_Type','Outlet_Size','Item_Type_Combined','Outlet_Type','Outlet','category_by_sales','Item_Identifier']
+le = LabelEncoder()
+for i in var_mod:
+    data_test[i] = le.fit_transform(data_test[i])
+
+data_test.to_csv('C:/Users/devarsh patel/Desktop/New folder/data_test.csv',header = True)
+data_train.to_csv('C:/Users/devarsh patel/Desktop/New folder/data_train.csv',header = True)
+```
+We will be doing the encoding for train as well as test dataset so that when we are done with building a linear regression model in R, we can test the model using test dataset
