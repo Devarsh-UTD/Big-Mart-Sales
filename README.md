@@ -6,6 +6,7 @@ We will be going through the following steps :-
 2) Data Exploration – looking at categorical and continuous feature summaries and making inferences about the data.
 3) Data Cleaning – imputing missing values in the data and checking for outliers
 4) Feature Engineering – modifying existing variables and creating new ones for analysis
-5) Model Building – making predictive models on the data
+5) Encoding - In order to run our regression model we will encode the data in python
+6) Model Building – making predictive models on the data
 
 I will be using R for most of the programming along with python for encoding
