@@ -315,7 +315,7 @@ summary(temp4)
                           (Other)  :8446                                             (Other)              :5006 
 ```
 Hang on we saw there were some non-consumables as well and a fat-content should not be specified for them. So we can also create a separate category for such kind of observations.
-```
+```R
 temp5 <- new_full_data
 temp5$Item_Fat_Content <- as.character(temp5$Item_Fat_Content)
 for(i in 1:nrow(temp5)){
@@ -331,7 +331,7 @@ temp5 <- temp5 %>% subset(., select=which(!duplicated(names(.))))
 temp5$Item_Type_Combined <- as.factor(temp5$Item_Type_Combined)
 summary(temp5)
 ```
-```
+```R
 Item_Identifier  Item_Weight       Item_Fat_Content Item_Visibility                    Item_Type       Item_MRP     
  DRA24  :   10   Min.   : 4.555   Low Fat   :6499    Min.   :0.003575   Fruits and Vegetables:2013   Min.   : 31.29  
  DRA59  :   10   1st Qu.: 8.600   Non-Edible:2686    1st Qu.:0.033143   Snack Foods          :1989   1st Qu.: 94.01  
@@ -358,5 +358,6 @@ Item_Identifier  Item_Weight       Item_Fat_Content Item_Visibility             
 ```
 Hence we have successfully converted 'Item_Fat_Content' having three factor levels namely Low Fat, Regular and Non-Edible and converted 
 'Item_Type_Combined' into a factor
+Thus we have completed the Data Exploration and cleaning process and made our dataset ready for model building
 
 
