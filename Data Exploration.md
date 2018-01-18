@@ -360,4 +360,8 @@ Hence we have successfully converted 'Item_Fat_Content' having three factor leve
 'Item_Type_Combined' into a factor
 Thus we have completed the Data Exploration and cleaning process and made our dataset ready for model building
 
-
+```
+train <- temp5[which(!temp5$Item_Outlet_Sales == 'None'),]
+test <- temp5[which(temp5$Item_Outlet_Sales == 'None'),]
+test <- subset(test, select = - Item_Outlet_Sales)
+```
