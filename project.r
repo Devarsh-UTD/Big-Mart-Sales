@@ -1,7 +1,9 @@
 rm(list = ls(all=TRUE))
 
 library(xlsx)
+
 train <- read.xlsx('Train_UWu5bXk.xlsx',sheetIndex = 1)
+
 test <- read.xlsx('Test_u94Q5KV.xlsx', sheetIndex = 1)
 
 temp <- data.frame(Item_Outlet_Sales=rep("None",nrow(test)),test[,])
@@ -10,23 +12,22 @@ full_data <- rbind(train,temp)
 
 str(full_data)
 
-
 colnames(full_data)[colSums(is.na(full_data)) > 0]
-#[1] "Item_Weight" "Outlet_Size"
 
 summary(full_data)
 
-
 unique_values <- apply(full_data, 2, function(x)length(unique(x)))
 
-
 var1 <- sapply(full_data , is.factor)
+
 cat_var <- full_data[var1]
+											 
 cat_var <- subset(cat_var, select = - Item_Identifier)
+
 unique_values1 <- apply(cat_var, 2, unique)
-unique_values1
 
 temp1 <- full_data
+
 temp1 <- subset(temp1, select = - Item_Outlet_Sales)
 
 anova_mod <- rpart(Item_Weight ~ . , 
@@ -170,7 +171,7 @@ train$Item_Outlet_Sales <- as.character(train$Item_Outlet_Sales)
 
 train$Item_Outlet_Sales <- as.numeric(train$Item_Outlet_Sales)
 
- ## Creating a baseline model
+## Creating a baseline model
 
 mean_sales <- mean(train$Item_Outlet_Sales)
 
