@@ -206,13 +206,13 @@ If you look at the Item_Identifier, i.e. the unique ID of each item, it starts w
 Lets determine the 'Outlet_Establishment_Year' of a store in terms of differences rather than years beacuse it would be more meaningful
 and add a column for 'average item outlet sales'
 
-```
+```R
 > new_full_data['Outlet_Establishment_Year'] <- 2013 - new_full_data$Outlet_Establishment_Year
 > s <- sqldf('select AVG(Item_Outlet_Sales),Item_Type from new group by Item_Type')
 > new_full_data <- sqldf('select * from new n INNER JOIN s on n.Item_Type = s.Item_Type ')
 > summary(new_full_data)
 ```
-```
+```R
 Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility                    Item_Type   
  DRA24  :   10   Min.   : 4.555   LF     : 522     Min.   :0.003575   Fruits and Vegetables:2013  
  DRA59  :   10   1st Qu.: 8.600   low fat: 178     1st Qu.:0.033143   Snack Foods          :1989  
@@ -241,7 +241,7 @@ Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility               
 
 We noted that 'Item_Fat_Content' had some irregularities because LF,lowfat and Low Fat indicate the same categorical level but have been treated differently in the data set, same goes for 'reg' and 'Regular'. Lets try to combine these levels .
 
-```
+```R
 temp4 <- new_full_data
 
 for(i in 1:nrow(temp4)){
@@ -256,7 +256,7 @@ for(i in 1:nrow(temp4)){
 new_full_data <- temp4
 summary(temp4)
 ```
-```
+```R
 Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility                    Item_Type   
  DRA24  :   10   Min.   : 4.555   LF     :   0     Min.   :0.003575   Fruits and Vegetables:2013  
  DRA59  :   10   1st Qu.: 8.600   low fat:   0     1st Qu.:0.033143   Snack Foods          :1989  
@@ -282,11 +282,81 @@ Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility               
                           1230.3984:  14                       Max.   :1673          Baking Goods         :1086  
                           (Other)  :8446                                             (Other)              :5006 
 ```
-As you can notice above that even though
-
-
+As you can notice above that even though we have replaced LF, lowfat and Low Fat with the same name but the factor levels are still different, lets handle this problem
+```R
 temp4$Item_Fat_Content <- as.character(temp4$Item_Fat_Content)
 temp4$Item_Fat_Content <- as.factor(temp4$Item_Fat_Content)
 summary(temp4)
+```
+```R
+ Item_Identifier  Item_Weight     Item_Fat_Content Item_Visibility                    Item_Type   
+ DRA24  :   10   Min.   : 4.555   Low Fat:9185     Min.   :0.003575   Fruits and Vegetables:2013  
+ DRA59  :   10   1st Qu.: 8.600   Regular:5019     1st Qu.:0.033143   Snack Foods          :1989  
+ DRB25  :   10   Median :12.500                    Median :0.062347   Household            :1548  
+ DRC25  :   10   Mean   :12.795                    Mean   :0.070034   Frozen Foods         :1426  
+ DRC27  :   10   3rd Qu.:16.750                    3rd Qu.:0.094037   Dairy                :1136  
+ DRC36  :   10   Max.   :21.350                    Max.   :0.328391   Baking Goods         :1086  
+ (Other):14144                                                        (Other)              :5006  
+    Item_MRP      Outlet_Identifier Outlet_Establishment_Year Outlet_Size   Outlet_Location_Type
+ Min.   : 31.29   OUT027 :1559      Min.   : 4.00             High  :1591   Tier 1:3980         
+ 1st Qu.: 94.01   OUT013 :1553      1st Qu.: 9.00             Medium:5588   Tier 2:4641         
+ Median :142.25   OUT035 :1550      Median :14.00             Small :7025   Tier 3:5583         
+ Mean   :141.00   OUT046 :1550      Mean   :15.17                                               
+ 3rd Qu.:185.86   OUT049 :1550      3rd Qu.:26.00                                               
+ Max.   :266.89   OUT045 :1548      Max.   :28.00                                               
+                  (Other):4894                                                                  
+            Outlet_Type   Item_Outlet_Sales Item_Type_Combined Avg_Item_Outlet_Sales                 Item_Type   
+ Grocery Store    :1805   None     :5681    Length:14204       Min.   :1163          Fruits and Vegetables:2013  
+ Supermarket Type1:9294   958.752  :  17    Class :character   1st Qu.:1247          Snack Foods          :1989  
+ Supermarket Type2:1546   1342.2528:  16    Mode  :character   Median :1328          Household            :1548  
+ Supermarket Type3:1559   1845.5976:  15                       Mean   :1309          Frozen Foods         :1426  
+                          703.0848 :  15                       3rd Qu.:1374          Dairy                :1136  
+                          1230.3984:  14                       Max.   :1673          Baking Goods         :1086  
+                          (Other)  :8446                                             (Other)              :5006 
+```
+Hang on we saw there were some non-consumables as well and a fat-content should not be specified for them. So we can also create a separate category for such kind of observations.
+```
+temp5 <- new_full_data
+temp5$Item_Fat_Content <- as.character(temp5$Item_Fat_Content)
+for(i in 1:nrow(temp5)){
+  if(temp5[i,'Item_Type_Combined'] == 'Non-Consumable'){
+    temp5[i,'Item_Fat_Content'] <- 'Non-Edible'
+  }else{
+    next
+  }
+}
+
+temp5$Item_Fat_Content <- as.factor(temp5$Item_Fat_Content)
+temp5 <- temp5 %>% subset(., select=which(!duplicated(names(.)))) 
+temp5$Item_Type_Combined <- as.factor(temp5$Item_Type_Combined)
+summary(temp5)
+```
+```
+Item_Identifier  Item_Weight       Item_Fat_Content Item_Visibility                    Item_Type       Item_MRP     
+ DRA24  :   10   Min.   : 4.555   Low Fat   :6499    Min.   :0.003575   Fruits and Vegetables:2013   Min.   : 31.29  
+ DRA59  :   10   1st Qu.: 8.600   Non-Edible:2686    1st Qu.:0.033143   Snack Foods          :1989   1st Qu.: 94.01  
+ DRB25  :   10   Median :12.500   Regular   :5019    Median :0.062347   Household            :1548   Median :142.25  
+ DRC25  :   10   Mean   :12.795                      Mean   :0.070034   Frozen Foods         :1426   Mean   :141.00  
+ DRC27  :   10   3rd Qu.:16.750                      3rd Qu.:0.094037   Dairy                :1136   3rd Qu.:185.86  
+ DRC36  :   10   Max.   :21.350                      Max.   :0.328391   Baking Goods         :1086   Max.   :266.89  
+ (Other):14144                                                          (Other)              :5006                   
+ Outlet_Identifier Outlet_Establishment_Year Outlet_Size   Outlet_Location_Type            Outlet_Type   Item_Outlet_Sales
+ OUT027 :1559      Min.   : 4.00             High  :1591   Tier 1:3980          Grocery Store    :1805   None     :5681   
+ OUT013 :1553      1st Qu.: 9.00             Medium:5588   Tier 2:4641          Supermarket Type1:9294   958.752  :  17   
+ OUT035 :1550      Median :14.00             Small :7025   Tier 3:5583          Supermarket Type2:1546   1342.2528:  16   
+ OUT046 :1550      Mean   :15.17                                                Supermarket Type3:1559   1845.5976:  15   
+ OUT049 :1550      3rd Qu.:26.00                                                                         703.0848 :  15   
+ OUT045 :1548      Max.   :28.00                                                                         1230.3984:  14   
+ (Other):4894                                                                                            (Other)  :8446   
+      Item_Type_Combined Avg_Item_Outlet_Sales
+ Drinks        : 1317    Min.   :1163         
+ Food          :10201    1st Qu.:1247         
+ Non-Consumable: 2686    Median :1328         
+                         Mean   :1309         
+                         3rd Qu.:1374         
+                         Max.   :1673     
+```
+Hence we have successfully converted 'Item_Fat_Content' having three factor levels namely Low Fat, Regular and Non-Edible and converted 
+'Item_Type_Combined' into a factor
 
 
