@@ -4,13 +4,11 @@ We will be using python for encoding the variables since it is relatively easy t
 from pandas import *
 import numpy as np
 from matplotlib import *  
+from sklearn.preprocessing import LabelEncoder
 
 data_train = read_csv('C:/Users/devarsh patel/Desktop/New folder/alg1.csv')
 data_test = read_csv('C:/Users/devarsh patel/Desktop/New folder/alg0.csv')
 
-
-#Import library:
-from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
 
 data_train['Outlet'] = le.fit_transform(data_train['Outlet_Identifier'])
