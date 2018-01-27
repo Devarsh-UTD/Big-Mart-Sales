@@ -1,1 +1,37 @@
+We will be building a baseline model which will help us in comparing our future models.
+I will be replacing the Item_Outlet_Sales column in test with the average Item_Outlet_Sales of train.
 
+```R
+mean_sales <- mean(train$Item_Outlet_Sales)
+test$Item_Outlet_Sales <- mean_sales
+```
+
+The next step would be encode the factor variables in python in order to build a linear regression model in R.We will be using the labele encoder in order to perform encoding for all the factor variables
+
+```P
+from pandas import *
+import numpy as np
+from matplotlib import *  
+
+data_train = read_csv('C:/Users/devarsh patel/Desktop/New folder/alg1.csv')
+data_test = read_csv('C:/Users/devarsh patel/Desktop/New folder/alg0.csv')
+
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+
+var_mod = ['Item_Fat_Content','Outlet_Location_Type','Outlet_Size','Item_Type_Combined','Outlet_Type','category_by_sales','Item_Identifier']
+le = LabelEncoder()
+for i in var_mod:
+    data_train[i] = le.fit_transform(data_train[i])
+    
+
+var_mod = ['Item_Fat_Content','Outlet_Location_Type','Outlet_Size','Item_Type_Combined','Outlet_Type','category_by_sales','Item_Identifier']
+le = LabelEncoder()
+for i in var_mod:
+    data_test[i] = le.fit_transform(data_test[i])
+
+data_test.to_csv('C:/Users/devarsh patel/Desktop/New folder/data_test.csv',header = True)
+
+data_train.to_csv('C:/Users/devarsh patel/Desktop/New folder/data_train.csv',header = True)
+```
