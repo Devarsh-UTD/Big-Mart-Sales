@@ -39,3 +39,125 @@ data_test.to_csv('C:/Users/devarsh patel/Desktop/New folder/data_test.csv',heade
 data_train.to_csv('C:/Users/devarsh patel/Desktop/New folder/data_train.csv',header = True)
 
 ```
+
+Now, lets build a multiple Regression model using the encoded variables and try to find out the accuracy of out model
+
+```R
+Call:
+lm(formula = Item_Outlet_Sales ~ ., data = data_linear_train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1995.9  -881.9  -138.8   793.9  2145.3 
+
+Coefficients:
+                            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                449.56556  367.20483   1.224   0.2209    
+Item_Identifier              0.03217    0.03994   0.806   0.4205    
+Item_Weight                  1.13339    2.37803   0.477   0.6337    
+Item_Fat_Content             3.59085   12.53496   0.286   0.7745    
+Item_Visibility           -155.09528  233.14236  -0.665   0.5059    
+Item_MRP                     1.69268    0.17753   9.535  < 2e-16 ***
+Outlet_Establishment_Year   10.90554    1.50261   7.258 4.28e-13 ***
+Outlet_Size                 52.61365   22.13794   2.377   0.0175 *  
+Outlet_Location_Type        36.85788   33.12295   1.113   0.2658    
+Outlet_Type                 41.47654   22.44069   1.848   0.0646 .  
+Item_Type_Combined         -47.89596   34.83480  -1.375   0.1692    
+Avg_Item_Outlet_Sales        0.43556    0.25660   1.697   0.0896 .  
+category_by_sales           71.98106   41.43996   1.737   0.0824 .  
+Outlet                       2.06372    7.91521   0.261   0.7943    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1015 on 8509 degrees of freedom
+Multiple R-squared:  0.01985,	Adjusted R-squared:  0.01836 
+F-statistic: 13.26 on 13 and 8509 DF,  p-value: < 2.2e-16
+```
+
+Lets try to take only the variables that are significant from the above regression.
+
+```R
+Model_Linear_1 <- lm(Item_Outlet_Sales~ Item_MRP + Outlet_Establishment_Year + Outlet_Size + Outlet_Type + Avg_Item_Outlet_Sales ,data = data_linear_train)
+Model_Linear_2 <- lm(Item_Outlet_Sales~ . ,data = data_linear_train)
+```
+```R
+summary(Model_Linear_1)
+```
+```R
+Call:
+lm(formula = Item_Outlet_Sales ~ Item_MRP + Outlet_Establishment_Year + 
+    Outlet_Size + Outlet_Type + Avg_Item_Outlet_Sales, data = data_linear_train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1998.0  -882.5  -138.8   793.5  2117.4 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               1.014e+03  1.893e+02   5.353 8.88e-08 ***
+Item_MRP                  1.676e+00  1.773e-01   9.451  < 2e-16 ***
+Outlet_Establishment_Year 1.024e+01  1.441e+00   7.102 1.33e-12 ***
+Outlet_Size               3.206e+01  1.837e+01   1.745    0.081 .  
+Outlet_Type               5.742e+01  1.437e+01   3.996 6.50e-05 ***
+Avg_Item_Outlet_Sales     6.666e-02  1.405e-01   0.474    0.635    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1015 on 8517 degrees of freedom
+Multiple R-squared:  0.01876,	Adjusted R-squared:  0.01819 
+F-statistic: 32.57 on 5 and 8517 DF,  p-value: < 2.2e-16
+
+```
+```R
+summary(Model_Linear_2)
+```
+```R
+Call:
+lm(formula = Item_Outlet_Sales ~ ., data = data_linear_train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1995.9  -881.9  -138.8   793.9  2145.3 
+
+Coefficients:
+                            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                449.56556  367.20483   1.224   0.2209    
+Item_Identifier              0.03217    0.03994   0.806   0.4205    
+Item_Weight                  1.13339    2.37803   0.477   0.6337    
+Item_Fat_Content             3.59085   12.53496   0.286   0.7745    
+Item_Visibility           -155.09528  233.14236  -0.665   0.5059    
+Item_MRP                     1.69268    0.17753   9.535  < 2e-16 ***
+Outlet_Establishment_Year   10.90554    1.50261   7.258 4.28e-13 ***
+Outlet_Size                 52.61365   22.13794   2.377   0.0175 *  
+Outlet_Location_Type        36.85788   33.12295   1.113   0.2658    
+Outlet_Type                 41.47654   22.44069   1.848   0.0646 .  
+Item_Type_Combined         -47.89596   34.83480  -1.375   0.1692    
+Avg_Item_Outlet_Sales        0.43556    0.25660   1.697   0.0896 .  
+category_by_sales           71.98106   41.43996   1.737   0.0824 .  
+Outlet                       2.06372    7.91521   0.261   0.7943    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1015 on 8509 degrees of freedom
+Multiple R-squared:  0.01985,	Adjusted R-squared:  0.01836 
+F-statistic: 13.26 on 13 and 8509 DF,  p-value: < 2.2e-16
+
+```
+
+Lets compute the AIC of both the models and try to find out which one is better
+
+```R
+AIC(Model_Linear_1)
+```
+```R
+[1] 142205.9
+```
+```R
+AIC(Model_Linear_2)
+```
+```R
+[1] 142212.4
+```
+
+As we can see the model with lower number of variables has a lower AIC then the  model containing all the independent variables, this is good for us.
+
