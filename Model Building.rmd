@@ -6,6 +6,8 @@ mean_sales <- mean(train$Item_Outlet_Sales)
 test$Item_Outlet_Sales <- mean_sales
 ```
 
+The Score with this model is 1861.44276283689. We will be using this baseline for comparing all our models. If the new model gives us a score below this then we will have to probably rebuild that model. 
+
 The next step would be encode the factor variables in python in order to build a linear regression model in R.We will be using the labele encoder in order to perform encoding for all the factor variables
 
 ```P
@@ -160,4 +162,50 @@ AIC(Model_Linear_2)
 ```
 
 As we can see the model with lower number of variables has a lower AIC then the  model containing all the independent variables, this is good for us.
+The leaderboard score for Model_Linear_1 is 1790.82081009079, better than the baseline.
+Our multiple regression model doesnt have high accuracy because we used encoding before building a model this might have resulted in multicollinearity or some kind of dummy varibale trap.
+
+Lets try to correct the model for heteroskedasticity using the sandwhich and lmtest package.
+
+```R
+library(sandwich) # For White correction 
+library(lmtest) # More advanced hypothesis testing tools
+
+# vcov(Model_Linear_1) # Standard error matrix for coefficients
+# vcovHC(Model_Linear_1) # White-corrected standard error matrix
+
+coeftest(Model_Linear_1,vcov.=vcov) # Old school t test for significance (like summary)
+coeftest(Model_Linear_1,vcov.=vcovHC) # White-corrected t test for significance
+```
+```R
+> coeftest(Model_Linear_1,vcov.=vcov) # Old school t test for significance (like summary)
+
+t test of coefficients:
+
+                            Estimate Std. Error t value  Pr(>|t|)    
+(Intercept)               1.0135e+03 1.8934e+02  5.3530 8.876e-08 ***
+Item_MRP                  1.6756e+00 1.7730e-01  9.4507 < 2.2e-16 ***
+Outlet_Establishment_Year 1.0236e+01 1.4412e+00  7.1023 1.325e-12 ***
+Outlet_Size               3.2055e+01 1.8368e+01  1.7451    0.0810 .  
+Outlet_Type               5.7420e+01 1.4370e+01  3.9957 6.504e-05 ***
+Avg_Item_Outlet_Sales     6.6661e-02 1.4050e-01  0.4745    0.6352    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+> coeftest(Model_Linear_1,vcov.=vcovHC)
+
+t test of coefficients:
+
+                            Estimate Std. Error t value  Pr(>|t|)    
+(Intercept)               1.0135e+03 1.8963e+02  5.3448 9.289e-08 ***
+Item_MRP                  1.6756e+00 1.9432e-01  8.6228 < 2.2e-16 ***
+Outlet_Establishment_Year 1.0236e+01 1.4395e+00  7.1105 1.249e-12 ***
+Outlet_Size               3.2055e+01 1.8397e+01  1.7424   0.08147 .  
+Outlet_Type               5.7420e+01 1.4048e+01  4.0874 4.402e-05 ***
+Avg_Item_Outlet_Sales     6.6661e-02 1.3993e-01  0.4764   0.63382    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+```
+
+As we can see the significance did not change while correcting for heteroskedasticity. Hence our model is Homoskedastic.
 
