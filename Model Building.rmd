@@ -208,4 +208,39 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 ```
 
 As we can see the significance did not change while correcting for heteroskedasticity. Hence our model is Homoskedastic.
+Lets try to use step wise regreesion and see if we can improve our score on the leaderboard.
 
+```R
+data_linear_test <- read.csv('data_test_python.csv')
+library(RcmdrMisc)
+Model_Linear_stepwise <- stepwise(Model_Linear, direction="backward",criterion = "AIC")
+summary(Model_Linear_stepwise)
+predicted_values_stepwise <- predict(Model_Linear_stepwise,data_linear_test)
+data_linear_test$Item_Outlet_Sales <- predicted_values_stepwise
+LinearModelSub_stepwise <- data_linear_test
+write.xlsx(LinearModelSub_stepwise,'C:/Users/devarsh patel/Desktop/New folder/LinearModelSub_stepwise.xlsx')
+```
+```R
+Call:
+lm(formula = Item_Outlet_Sales ~ Item_MRP + Outlet_Establishment_Year + 
+    Outlet_Size + Outlet_Type, data = data_linear_train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1997.6  -881.5  -139.4   793.7  2116.2 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               1099.7744    53.0923  20.714  < 2e-16 ***
+Item_MRP                     1.6829     0.1766   9.528  < 2e-16 ***
+Outlet_Establishment_Year   10.2342     1.4411   7.102 1.33e-12 ***
+Outlet_Size                 32.0485    18.3675   1.745    0.081 .  
+Outlet_Type                 57.4790    14.3691   4.000 6.38e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1015 on 8518 degrees of freedom
+Multiple R-squared:  0.01874,	Adjusted R-squared:  0.01828 
+F-statistic: 40.66 on 4 and 8518 DF,  p-value: < 2.2e-16
+```
+Our leaderboard score improved from 1790.82081009079 to 1787.94303604482 by using step wise regression because it used variables which were different from Model_Linear_1 based on the optimum AIC value.
