@@ -244,3 +244,73 @@ Multiple R-squared:  0.01874,	Adjusted R-squared:  0.01828
 F-statistic: 40.66 on 4 and 8518 DF,  p-value: < 2.2e-16
 ```
 Our leaderboard score improved from 1790.82081009079 to 1787.94303604482 by using step wise regression because it used variables which were different from Model_Linear_1 based on the optimum AIC value.
+
+Since the accuracy provided by multiple regression and stepwise regression is relatively low lets try to build a regression tree . We dont even have to encode the factor variables as the package(rpart) handles factor variables implicitly. we will first try to build a normal decision tree and then check if we can prune the tree for better accuracy.
+
+
+
+```R
+library(rpart)
+
+train_decision_tree <- train
+train_decision_tree <- subset(train_decision_tree,select = -c(Item_Identifier,Item_Type,category_by_sales))
+set.seed(1234)
+Model_Decision_Tree_1 <- rpart(Item_Outlet_Sales ~ . , data = train_decision_tree, method = 'anova')
+pfit<- prune(Model_Decision_Tree_1, cp=0.010000)
+printcp(pfit)
+```
+```R
+printcp(Model_Decision_Tree_1)
+```
+```R
+Regression tree:
+rpart(formula = Item_Outlet_Sales ~ ., data = train_decision_tree, 
+    method = "anova")
+
+Variables actually used in tree construction:
+[1] Item_MRP                  Outlet_Establishment_Year Outlet_Identifier         Outlet_Type              
+
+Root node error: 2.4817e+10/8523 = 2911799
+
+n= 8523 
+
+        CP nsplit rel error  xerror      xstd
+1 0.236626      0   1.00000 1.00018 0.0205952
+2 0.163179      1   0.76337 0.76420 0.0160746
+3 0.058926      2   0.60020 0.60076 0.0138319
+4 0.032997      3   0.54127 0.54203 0.0114726
+5 0.032966      5   0.47527 0.49374 0.0109148
+6 0.013676      6   0.44231 0.44590 0.0104124
+7 0.010984      7   0.42863 0.43271 0.0102626
+8 0.010000      8   0.41765 0.42647 0.0098994
+
+```
+We built a regression tree and tried to find the best accuracy which was (1-0.41765) . Pruning of the tree gave us the same result .
+This model works better than the earlier regression models because of the amazing power of classfication algorithms like regreesion trees. Our leaderboard score improved to 1309.73748928418 from 1787.94303604482 
+
+
+Lets use ensemble methods like Random Forest in order to avoid overfitting of the data.
+```R
+library(randomForest)
+library(doSNOW)
+library(caret)
+
+data_random_forest <- train
+
+str(data_random_forest)
+
+data_random_forest <- subset(data_random_forest,select = - c(Item_Identifier,Item_Type))
+
+response <- data_random_forest$Item_Outlet_Sales
+
+predictors <- subset(predictors,select = -c(Avg_Item_Outlet_Sales))
+
+bestmtry <- tuneRF(predictors,response)
+
+```
+
+Lets use tuneRF to find the optimal number of variables to select while building a single decision tree in a forests of decision trees
+
+
+
+
