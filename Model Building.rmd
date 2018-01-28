@@ -339,7 +339,25 @@ I first tried to find the best mtry by giving default ntreeTry and improve param
 Hence we will be using mtry = 4 and ntree = 1000 while buidling a random forests model. First we will try to take all the independent variables, after that using the varIMplot function we will filter out the variables which are not contributing towards the models accuarcy
 
 ```R
+library(randomForest)
+library(doSNOW)
+library(caret)
 
+data_random_forest <- train
+set.seed(1234)
+Model_Random_forest_1 <- randomForest(data_random_forest$Item_Outlet_Sales~., data = data_random_forest, mtry = 4,ntree = 1000)
+varImpPlot(Model_Random_forest_1)
+Model_Random_forest_1
+```
+```R
+Call:
+ randomForest(formula = data_random_forest$Item_Outlet_Sales ~      ., data = data_random_forest, mtry = 4, ntree = 1000) 
+               Type of random forest: regression
+                     Number of trees: 1000
+No. of variables tried at each split: 4
+
+          Mean of squared residuals: 1224107
+                    % Var explained: 57.96
 
 ```
 
