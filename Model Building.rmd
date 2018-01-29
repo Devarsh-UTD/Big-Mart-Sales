@@ -360,7 +360,31 @@ No. of variables tried at each split: 4
                     % Var explained: 57.96
 
 ```
+Lets select all the variables except Outlet_Size,category_by_sales and Item_Type, as they are not contributing much towards the accuracy.
 
+```R
+data_random_forest <- subset(data_random_forest,select = - c(Outlet_Size,category_by_sales,Item_Type))
+set.seed(1234)
+Model_Random_forest_2 <- randomForest(data_random_forest$Item_Outlet_Sales~., data = data_random_forest, mtry = 4,ntree = 1000)
+```
+```R
+Model_Random_forest_2
+```
+```R
+Call:
+ randomForest(formula = data_random_forest$Item_Outlet_Sales ~      ., data = data_random_forest, mtry = 4, ntree = 1000) 
+               Type of random forest: regression
+                     Number of trees: 1000
+No. of variables tried at each split: 4
+
+          Mean of squared residuals: 1220853
+                    % Var explained: 58.07
+```
+
+As we can notice that the accuracy of the model improved from 57.96 to 58.07, and the leaderboard score changed to 1175.09758415086 from 
+1309.73748928418. 
+
+Now the only thing left is to perform cross validation using caret and check if our model can give the same accuracy on unseen data.
 
 
 
