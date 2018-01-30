@@ -43,7 +43,15 @@ data_train.to_csv('C:/Users/devarsh patel/Desktop/New folder/data_train.csv',hea
 ```
 
 Now, lets build a multiple Regression model using the encoded variables and try to find out the accuracy of out model
+Initially we will include all the variables in our model, we will build a second regression model only using those varaibles that were shown to be significant in Model_Linear_1 .
 
+```R
+Model_Linear_2 <- lm(Item_Outlet_Sales~ Item_MRP + Outlet_Establishment_Year + Outlet_Size + Outlet_Type + Avg_Item_Outlet_Sales ,data = data_linear_train)
+Model_Linear_1 <- lm(Item_Outlet_Sales~ . ,data = data_linear_train)
+```
+```R
+summary(Model_Linear_1)
+```
 ```R
 Call:
 lm(formula = Item_Outlet_Sales ~ ., data = data_linear_train)
@@ -74,16 +82,10 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 Residual standard error: 1015 on 8509 degrees of freedom
 Multiple R-squared:  0.01985,	Adjusted R-squared:  0.01836 
 F-statistic: 13.26 on 13 and 8509 DF,  p-value: < 2.2e-16
-```
 
-Lets try to take only the variables that are significant from the above regression.
-
-```R
-Model_Linear_1 <- lm(Item_Outlet_Sales~ Item_MRP + Outlet_Establishment_Year + Outlet_Size + Outlet_Type + Avg_Item_Outlet_Sales ,data = data_linear_train)
-Model_Linear_2 <- lm(Item_Outlet_Sales~ . ,data = data_linear_train)
 ```
 ```R
-summary(Model_Linear_1)
+summary(Model_Linear_2)
 ```
 ```R
 Call:
@@ -108,41 +110,6 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 Residual standard error: 1015 on 8517 degrees of freedom
 Multiple R-squared:  0.01876,	Adjusted R-squared:  0.01819 
 F-statistic: 32.57 on 5 and 8517 DF,  p-value: < 2.2e-16
-
-```
-```R
-summary(Model_Linear_2)
-```
-```R
-Call:
-lm(formula = Item_Outlet_Sales ~ ., data = data_linear_train)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--1995.9  -881.9  -138.8   793.9  2145.3 
-
-Coefficients:
-                            Estimate Std. Error t value Pr(>|t|)    
-(Intercept)                449.56556  367.20483   1.224   0.2209    
-Item_Identifier              0.03217    0.03994   0.806   0.4205    
-Item_Weight                  1.13339    2.37803   0.477   0.6337    
-Item_Fat_Content             3.59085   12.53496   0.286   0.7745    
-Item_Visibility           -155.09528  233.14236  -0.665   0.5059    
-Item_MRP                     1.69268    0.17753   9.535  < 2e-16 ***
-Outlet_Establishment_Year   10.90554    1.50261   7.258 4.28e-13 ***
-Outlet_Size                 52.61365   22.13794   2.377   0.0175 *  
-Outlet_Location_Type        36.85788   33.12295   1.113   0.2658    
-Outlet_Type                 41.47654   22.44069   1.848   0.0646 .  
-Item_Type_Combined         -47.89596   34.83480  -1.375   0.1692    
-Avg_Item_Outlet_Sales        0.43556    0.25660   1.697   0.0896 .  
-category_by_sales           71.98106   41.43996   1.737   0.0824 .  
-Outlet                       2.06372    7.91521   0.261   0.7943    
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Residual standard error: 1015 on 8509 degrees of freedom
-Multiple R-squared:  0.01985,	Adjusted R-squared:  0.01836 
-F-statistic: 13.26 on 13 and 8509 DF,  p-value: < 2.2e-16
 
 ```
 
@@ -174,12 +141,11 @@ library(lmtest) # More advanced hypothesis testing tools
 # vcov(Model_Linear_1) # Standard error matrix for coefficients
 # vcovHC(Model_Linear_1) # White-corrected standard error matrix
 
-coeftest(Model_Linear_1,vcov.=vcov) # Old school t test for significance (like summary)
-coeftest(Model_Linear_1,vcov.=vcovHC) # White-corrected t test for significance
 ```
 ```R
-> coeftest(Model_Linear_1,vcov.=vcov) # Old school t test for significance (like summary)
-
+coeftest(Model_Linear_1,vcov.=vcov) # Old school t test for significance (like summary)
+```
+```R
 t test of coefficients:
 
                             Estimate Std. Error t value  Pr(>|t|)    
@@ -191,9 +157,10 @@ Outlet_Type               5.7420e+01 1.4370e+01  3.9957 6.504e-05 ***
 Avg_Item_Outlet_Sales     6.6661e-02 1.4050e-01  0.4745    0.6352    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-> coeftest(Model_Linear_1,vcov.=vcovHC)
-
+```R
+coeftest(Model_Linear_1,vcov.=vcovHC) 
+```
+```R
 t test of coefficients:
 
                             Estimate Std. Error t value  Pr(>|t|)    
@@ -214,11 +181,11 @@ Lets try to use step wise regreesion and see if we can improve our score on the 
 data_linear_test <- read.csv('data_test_python.csv')
 library(RcmdrMisc)
 Model_Linear_stepwise <- stepwise(Model_Linear, direction="backward",criterion = "AIC")
-summary(Model_Linear_stepwise)
 predicted_values_stepwise <- predict(Model_Linear_stepwise,data_linear_test)
 data_linear_test$Item_Outlet_Sales <- predicted_values_stepwise
 LinearModelSub_stepwise <- data_linear_test
 write.xlsx(LinearModelSub_stepwise,'C:/Users/devarsh patel/Desktop/New folder/LinearModelSub_stepwise.xlsx')
+summary(Model_Linear_stepwise)
 ```
 ```R
 Call:
