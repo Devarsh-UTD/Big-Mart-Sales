@@ -138,9 +138,6 @@ Lets try to correct the model for heteroskedasticity using the sandwhich and lmt
 library(sandwich) # For White correction 
 library(lmtest) # More advanced hypothesis testing tools
 
-# vcov(Model_Linear_1) # Standard error matrix for coefficients
-# vcovHC(Model_Linear_1) # White-corrected standard error matrix
-
 ```
 ```R
 coeftest(Model_Linear_1,vcov.=vcov) # Old school t test for significance (like summary)
