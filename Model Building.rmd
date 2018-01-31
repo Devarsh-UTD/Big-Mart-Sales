@@ -108,7 +108,7 @@ Avg_Item_Outlet_Sales     6.666e-02  1.405e-01   0.474    0.635
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Residual standard error: 1015 on 8517 degrees of freedom
-Multiple R-squared:  0.01876,	Adjusted R-squared:  0.01819 
+Multiple R-squared:  0.01976,	Adjusted R-squared:  0.01919 
 F-statistic: 32.57 on 5 and 8517 DF,  p-value: < 2.2e-16
 
 ```
@@ -128,9 +128,11 @@ AIC(Model_Linear_2)
 [1] 142212.4
 ```
 
-As we can see the model with lower number of variables has a lower AIC then the  model containing all the independent variables, this is good for us.
+Even though the second model has higher accuarcy, it doesnt imply that our second model is better. if you would have noticed the beta's for our second model have changed. This happened beacuse the beta's in second model tried to account for the varaince that was initally contributed by the insignificant variables. For this reason, it is always good to include even the insignificant variable while making predictions.
 The leaderboard score for Model_Linear_1 is 1790.82081009079, better than the baseline.
 Our multiple regression model doesnt have high accuracy because we used encoding before building a model this might have resulted in multicollinearity or some kind of dummy varibale trap.
+
+We cannot rank the variables based on the significane test conducted above beacuse the scale is different for different variables. We would need to standadize the variables in order to rank them. 
 
 Lets try to correct the model for heteroskedasticity using the sandwhich and lmtest package.
 
@@ -145,13 +147,21 @@ coeftest(Model_Linear_1,vcov.=vcov) # Old school t test for significance (like s
 ```R
 t test of coefficients:
 
-                            Estimate Std. Error t value  Pr(>|t|)    
-(Intercept)               1.0135e+03 1.8934e+02  5.3530 8.876e-08 ***
-Item_MRP                  1.6756e+00 1.7730e-01  9.4507 < 2.2e-16 ***
-Outlet_Establishment_Year 1.0236e+01 1.4412e+00  7.1023 1.325e-12 ***
-Outlet_Size               3.2055e+01 1.8368e+01  1.7451    0.0810 .  
-Outlet_Type               5.7420e+01 1.4370e+01  3.9957 6.504e-05 ***
-Avg_Item_Outlet_Sales     6.6661e-02 1.4050e-01  0.4745    0.6352    
+                             Estimate  Std. Error t value  Pr(>|t|)    
+(Intercept)                449.565561  367.204831  1.2243   0.22088    
+Item_Identifier              0.032170    0.039937  0.8055   0.42055    
+Item_Weight                  1.133387    2.378034  0.4766   0.63365    
+Item_Fat_Content             3.590851   12.534961  0.2865   0.77453    
+Item_Visibility           -155.095279  233.142363 -0.6652   0.50592    
+Item_MRP                     1.692681    0.177528  9.5347 < 2.2e-16 ***
+Outlet_Establishment_Year   10.905541    1.502612  7.2577 4.283e-13 ***
+Outlet_Size                 52.613648   22.137941  2.3766   0.01749 *  
+Outlet_Location_Type        36.857876   33.122950  1.1128   0.26584    
+Outlet_Type                 41.476540   22.440694  1.8483   0.06460 .  
+Item_Type_Combined         -47.895962   34.834801 -1.3749   0.16918    
+Avg_Item_Outlet_Sales        0.435563    0.256599  1.6974   0.08965 .  
+category_by_sales           71.981064   41.439962  1.7370   0.08242 .  
+Outlet                       2.063716    7.915210  0.2607   0.79431    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 ```R
@@ -160,18 +170,26 @@ coeftest(Model_Linear_1,vcov.=vcovHC)
 ```R
 t test of coefficients:
 
-                            Estimate Std. Error t value  Pr(>|t|)    
-(Intercept)               1.0135e+03 1.8963e+02  5.3448 9.289e-08 ***
-Item_MRP                  1.6756e+00 1.9432e-01  8.6228 < 2.2e-16 ***
-Outlet_Establishment_Year 1.0236e+01 1.4395e+00  7.1105 1.249e-12 ***
-Outlet_Size               3.2055e+01 1.8397e+01  1.7424   0.08147 .  
-Outlet_Type               5.7420e+01 1.4048e+01  4.0874 4.402e-05 ***
-Avg_Item_Outlet_Sales     6.6661e-02 1.3993e-01  0.4764   0.63382    
+                             Estimate  Std. Error t value  Pr(>|t|)    
+(Intercept)                449.565561  366.982873  1.2250   0.22060    
+Item_Identifier              0.032170    0.039856  0.8071   0.41960    
+Item_Weight                  1.133387    2.358086  0.4806   0.63079    
+Item_Fat_Content             3.590851   12.590149  0.2852   0.77549    
+Item_Visibility           -155.095279  233.188132 -0.6651   0.50600    
+Item_MRP                     1.692681    0.194735  8.6922 < 2.2e-16 ***
+Outlet_Establishment_Year   10.905541    1.499138  7.2745 3.784e-13 ***
+Outlet_Size                 52.613648   22.179867  2.3721   0.01771 *  
+Outlet_Location_Type        36.857876   33.529478  1.0993   0.27168    
+Outlet_Type                 41.476540   22.608560  1.8346   0.06661 .  
+Item_Type_Combined         -47.895962   35.149924 -1.3626   0.17304    
+Avg_Item_Outlet_Sales        0.435563    0.254865  1.7090   0.08749 .  
+category_by_sales           71.981064   41.636644  1.7288   0.08388 .  
+Outlet                       2.063716    7.945758  0.2597   0.79508    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 ```
 
-As we can see the significance did not change while correcting for heteroskedasticity. Hence our model is Homoskedastic.
+As we can see the significance did not change while correcting for heteroskedasticity. Hence our model is Homoskedastic. This the variance of error is constant.
 Lets try to use step wise regreesion and see if we can improve our score on the leaderboard.
 
 ```R
@@ -253,7 +271,7 @@ We built a regression tree and tried to find the best accuracy which was (1-0.41
 This model works better than the earlier regression models because of the amazing power of classfication algorithms like regreesion trees. Our leaderboard score improved to 1309.73748928418 from 1787.94303604482 
 
 
-Lets use ensemble methods like Random Forest in order to avoid overfitting of the data.
+Lets use ensemble methods like Random Forest in order to avoid overfitting of the data, which is one of the major drawbacks of decision trees.
 ```R
 library(randomForest)
 library(doSNOW)
