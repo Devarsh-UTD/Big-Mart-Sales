@@ -191,7 +191,7 @@ Outlet                       2.063716    7.945758  0.2597   0.79508
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 ```
 
-As we can see the significance did not change while correcting for heteroskedasticity. Hence our model is Homoskedastic. This the variance of error is constant.
+As we can see the significance did not change while correcting for heteroskedasticity. Hence our model is Homoskedastic. This means the variance of error is constant.
 Lets try to use step wise regreesion and see if we can improve our score on the leaderboard.
 
 ```R
