@@ -364,10 +364,9 @@ No. of variables tried at each split: 4
           Mean of squared residuals: 1220853
                     % Var explained: 58.07
 ```
-
+Since we removed some variables and then built Model_Random_forest_2, we maybe removed some kind of correlation present among our variables in our data
 As we can notice that the accuracy of the model improved from 57.96 to 58.07, and the leaderboard score changed to 1175.09758415086 from 
 1309.73748928418. 
-
 Now the only thing left is to perform cross validation using caret and check if our model can give the same accuracy on unseen data.
 
 
