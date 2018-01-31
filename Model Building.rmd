@@ -1,3 +1,5 @@
+## Model Building
+
 We will be building a baseline model which will help us in comparing our future models.
 I will be replacing the Item_Outlet_Sales column in test with the average Item_Outlet_Sales of train.
 
