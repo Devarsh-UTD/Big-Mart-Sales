@@ -130,11 +130,11 @@ AIC(Model_Linear_2)
 [1] 142212.4
 ```
 
-Even though the second model has higher accuarcy, it doesnt imply that our second model is better. if you would have noticed the beta's for our second model have changed. This happened beacuse the beta's in second model tried to account for the varaince that was initally contributed by the insignificant variables. For this reason, it is always good to include even the insignificant variable while making predictions.
+Even though the second model has higher accuarcy, it doesnt imply that our second model is better. if you would have noticed the beta's for our second model have changed. This happened beacuse the beta's in second model tried to account for the varaince that was initally contributed by the insignificant variables. For this reason, it is always good to include even the insignificant variable while making predictions. Furthermore we cannot rank the variables based on the significane test conducted above beacuse the scale is different for different variables. We would need to standadize the variables in order to rank them. 
 The leaderboard score for Model_Linear_1 is 1790.82081009079, better than the baseline.
 Our multiple regression model doesnt have high accuracy because we used encoding before building a model this might have resulted in multicollinearity or some kind of dummy varibale trap.
 
-We cannot rank the variables based on the significane test conducted above beacuse the scale is different for different variables. We would need to standadize the variables in order to rank them. 
+
 
 Lets try to correct the model for heteroskedasticity using the sandwhich and lmtest package.
 
